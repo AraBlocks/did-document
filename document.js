@@ -70,6 +70,10 @@ class DIDDocument {
   get authentication() { return this[$authentication] }
   get service() { return this[$service] }
 
+  [require('util').inspect.custom]() {
+    return Object.assign(new class DIDDocument {}, this.toJSON())
+  }
+
   addPublicKey(pk) {
     if (null == pk || 'object' != typeof pk) {
       throw new TypeError("DIDDocument#addPublicKey: Expecting object.")

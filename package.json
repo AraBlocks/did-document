@@ -1,6 +1,6 @@
 {
   "name": "did-document",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Decentralized Identity (DID) Document",
   "main": "index.js",
   "scripts": {
@@ -15,8 +15,8 @@
   "author": "Joseph Werle <werle@littlstar.com>",
   "license": "MIT",
   "dependencies": {
-    "did-document-public-key": "^0.1.1",
-    "did-uri": "^0.2.1"
+    "did-document-public-key": "^0.1.2",
+    "did-uri": "^0.2.4"
   },
   "devDependencies": {
     "tape": "^4.9.0"

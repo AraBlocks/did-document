@@ -22,6 +22,10 @@ class Service {
   get type() { return this[$type] }
   get serviceEndpoint() { return this[$serviceEndpoint] }
 
+  [require('util').inspect.custom]() {
+    return Object.assign(new class DIDService {}, this.toJSON())
+  }
+
   toJSON() {
     const { type, serviceEndpoint } = this
     return Object.assign({}, this, { type, serviceEndpoint })

@@ -17,9 +17,16 @@ class Authentication {
 
   get type() { return this[$type] }
 
+  [require('util').inspect.custom]() {
+    return Object.assign(new class DIDAuthentication {}, this.toJSON())
+  }
+
   toJSON() {
-    const { type } = this
-    return Object.assign({}, this, { type })
+    const json = {}
+    for (const k of Object.keys(this)) {
+      json[k] = this[k]
+    }
+    return json
   }
 }
 
