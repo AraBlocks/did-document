@@ -6,6 +6,7 @@ const { Service } = require('./service')
 const { DID } = require('did-uri')
 
 const $id = Symbol('id')
+const $proof = Symbol('proof')
 const $context = Symbol('context')
 const $service = Symbol('service')
 const $publicKey = Symbol('publicKey')
@@ -62,6 +63,14 @@ class DIDDocument {
     // advertise, including decentralized identity management services
     // for further discovery, authentication, authorization, or interaction.
     this[$service] = []
+
+    // 4.9 Proof
+    // - https://w3c-ccg.github.io/did-spec/#proof-optional
+    // A proof on a DID Document is cryptographic proof of the integrity of
+    // the DID Document according to either:
+    //   1. The entity as defined in section 4.6 Service Endpoints, or if not present:
+    //   2. The delegate as defined in section 4.3.
+    this[$proof] = {}
   }
 
   get context() { return this[$context] }
@@ -69,6 +78,7 @@ class DIDDocument {
   get publicKey() { return this[$publicKey] }
   get authentication() { return this[$authentication] }
   get service() { return this[$service] }
+  get proof() { return this[$proof] }
 
   [require('util').inspect.custom]() {
     return Object.assign(new class DIDDocument {}, this.toJSON())
@@ -107,11 +117,16 @@ class DIDDocument {
     return this
   }
 
+  proof(proof) {
+    return Object.assign(this[$proof], proof)
+  }
+
   toJSON() {
     return {
       '@context': this[$context],
 
       id: this[$id],
+      proof: this[$proof],
       service: this[$service],
       publicKey: this[$publicKey],
       authentication: this[$authentication],
