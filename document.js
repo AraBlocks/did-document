@@ -2,6 +2,7 @@
 
 const { Authentication } = require('./authentication')
 const { PublicKey } = require('./public-key')
+const { normalize } = require('./normalize')
 const { Service } = require('./service')
 const { DID } = require('did-uri')
 
@@ -93,6 +94,8 @@ class DIDDocument {
   get publicKey() { return this[$publicKey] }
   get authentication() { return this[$authentication] }
   get service() { return this[$service] }
+  get created() { return this[$created] }
+  get updated() { return this[$updated] }
   get proof() { return this[$proof] }
 
   [require('util').inspect.custom]() {
@@ -139,6 +142,15 @@ class DIDDocument {
   update() {
     this[$updated] = new Date()
     return this
+  }
+
+  digest(hash, encoding) {
+    const json = this.toJSON()
+    const { id, publicKey, authentication, service, created, updated } = json
+    const normal = normalize({id, publicKey, authentication, service, created, updated})
+    const string = JSON.stringify(normal)
+    const digest = hash(Buffer.from(string))
+    return encoding ? digest.toString(encoding) : digest
   }
 
   toJSON() {
