@@ -7,6 +7,8 @@ const { DID } = require('did-uri')
 
 const $id = Symbol('id')
 const $proof = Symbol('proof')
+const $created = Symbol('created')
+const $updated = Symbol('updated')
 const $context = Symbol('context')
 const $service = Symbol('service')
 const $publicKey = Symbol('publicKey')
@@ -25,9 +27,10 @@ class DIDDocument {
     // - https://w3c-ccg.github.io/did-spec/#context
     // JSON objects in JSON-LD format must include
     // a JSON-LD context statement
-    this[$context] = kDIDDocumentContext
     if (context && 'string' == typeof context || Array.isArray(context)) {
       this[$context] = context
+    } else {
+      this[$context] = kDIDDocumentContext
     }
 
     // 4.2 DID Subject
@@ -35,7 +38,7 @@ class DIDDocument {
     // The DID subject is the identifier that the DID
     // Document is about, i.e., it is the DID described
     // by DID Document.
-    this[$id] = new DID(opts.id)
+    this[$id] = new DID(opts.did || opts.id)
 
     // 4.3 Public Keys
     // - https://w3c-ccg.github.io/did-spec/#public-keys
@@ -45,14 +48,14 @@ class DIDDocument {
     // authentication (see Section 4.4 Authentication) or
     // establishing secure communication with service
     // endpoints (see Section 4.6 Service Endpoints).
-    this[$publicKey] = []
+    this[$publicKey] = Object.assign([], opts.publicKey)
 
     // 4.4 Authentication
     // - https://w3c-ccg.github.io/did-spec/#authentication
     // Authentication is the mechanism by which an entity
     // can cryptographically prove that they are associated
     // with a DID and DID Description
-    this[$authentication] = []
+    this[$authentication] = Object.assign([], opts.authentication)
 
     // 4.6 Service Endpoints
     // - https://w3c-ccg.github.io/did-spec/#service-endpoints
@@ -62,7 +65,19 @@ class DIDDocument {
     // endpoint may represent any type of service the entity wishes to
     // advertise, including decentralized identity management services
     // for further discovery, authentication, authorization, or interaction.
-    this[$service] = []
+    this[$service] = Object.assign([], opts.service)
+
+    // 4.7 Created
+    // - https://w3c-ccg.github.io/did-spec/#created-optional
+    // Standard metadata for identifier records includes a timestamp of
+    // the original creation.
+    this[$created] = opts.created || new Date()
+
+    // 4.8 Updated
+    // - https://w3c-ccg.github.io/did-spec/#updated-optional
+    // Standard metadata for identifier records includes a timestamp
+    // of the most recent change.
+    this[$updated] = opts.updated || this[$created]
 
     // 4.9 Proof
     // - https://w3c-ccg.github.io/did-spec/#proof-optional
@@ -70,7 +85,7 @@ class DIDDocument {
     // the DID Document according to either:
     //   1. The entity as defined in section 4.6 Service Endpoints, or if not present:
     //   2. The delegate as defined in section 4.3.
-    this[$proof] = {}
+    this[$proof] = Object.assign({}, opts.proof)
   }
 
   get context() { return this[$context] }
@@ -121,15 +136,21 @@ class DIDDocument {
     return Object.assign(this[$proof], proof)
   }
 
+  update() {
+    this[$updated] = new Date()
+    return this
+  }
+
   toJSON() {
     return {
       '@context': this[$context],
-
       id: this[$id],
-      proof: this[$proof],
-      service: this[$service],
       publicKey: this[$publicKey],
       authentication: this[$authentication],
+      service: this[$service],
+      created: this[$created].toISOString(),
+      updated: this[$updated].toISOString(),
+      proof: this[$proof],
     }
   }
 }
