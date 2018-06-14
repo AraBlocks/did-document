@@ -72,13 +72,13 @@ class DIDDocument {
     // - https://w3c-ccg.github.io/did-spec/#created-optional
     // Standard metadata for identifier records includes a timestamp of
     // the original creation.
-    this[$created] = opts.created || new Date()
+    this[$created] = ('string' == typeof opts.created) ? new Date(opts.created) : opts.created
 
     // 4.8 Updated
     // - https://w3c-ccg.github.io/did-spec/#updated-optional
     // Standard metadata for identifier records includes a timestamp
     // of the most recent change.
-    this[$updated] = opts.updated || this[$created]
+    this[$updated] = ('string' == typeof opts.updated) ? new Date(opts.updated) : this[$created]
 
     // 4.9 Proof
     // - https://w3c-ccg.github.io/did-spec/#proof-optional
