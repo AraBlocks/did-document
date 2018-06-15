@@ -26,6 +26,7 @@ class Authentication {
     for (const k of Object.keys(this)) {
       json[k] = this[k]
     }
+    json['type'] = this.type
     return json
   }
 }
