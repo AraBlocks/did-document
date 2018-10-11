@@ -10,6 +10,7 @@ const $id = Symbol('id')
 const $proof = Symbol('proof')
 const $created = Symbol('created')
 const $updated = Symbol('updated')
+const $revoked = Symbol('revoked')
 const $context = Symbol('context')
 const $service = Symbol('service')
 const $publicKey = Symbol('publicKey')
@@ -95,6 +96,13 @@ class DIDDocument {
     //   1. The entity as defined in section 4.6 Service Endpoints, or if not present:
     //   2. The delegate as defined in section 4.3.
     this[$proof] = Object.assign({}, opts.proof)
+
+    // 5.0 Revoked
+    // - https://w3c-ccg.github.io/did-spec/#delete-revoke
+    // A timestamp value indicating when the identifier was revoked
+    if (opts.revoked) {
+      this[$revoked] = new Date(opts.revoked)
+    }
   }
 
   get context() { return this[$context] }
@@ -104,6 +112,14 @@ class DIDDocument {
   get service() { return this[$service] }
   get created() { return this[$created] }
   get updated() { return this[$updated] }
+  get revoked() {
+    if (this[$revoked]) {
+      return this[$revoked]
+    }
+    else {
+      return null
+    }
+  }
   get proof() { return this[$proof] }
 
   [require('util').inspect.custom]() {
@@ -154,15 +170,24 @@ class DIDDocument {
 
   digest(hash, encoding) {
     const json = this.toJSON()
-    const { id, publicKey, authentication, service, created, updated } = json
-    const normal = normalize({id, publicKey, authentication, service, created, updated})
+    let normal
+    if (json.revoked) {
+      console.log("Revoke")
+      const { id, publicKey, authentication, service, created, updated, revoked } = json
+      normal = normalize({id, publicKey, authentication, service, created, updated, revoked})
+    }
+    else {
+      console.log("Not")
+      const { id, publicKey, authentication, service, created, updated } = json
+      normal = normalize({id, publicKey, authentication, service, created, updated})
+    }
     const string = JSON.stringify(normal)
     const digest = hash(Buffer.from(string))
     return encoding ? digest.toString(encoding) : digest
   }
 
   toJSON() {
-    return {
+    const ddo = {
       '@context': this[$context],
       id: this[$id],
       publicKey: this[$publicKey],
@@ -172,6 +197,10 @@ class DIDDocument {
       updated: this[$updated].toISOString(),
       proof: this[$proof],
     }
+    if (this[$revoked]) {
+      ddo.revoked = this[$revoked]
+    }
+    return ddo
   }
 }
 
