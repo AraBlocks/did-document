@@ -84,7 +84,7 @@ class DIDDocument {
     // Standard metadata for identifier records includes a timestamp
     // of the most recent change.
     if (null == opts.updated) {
-      this[$updated] = this[$created]
+      this[$updated] = new Date()
     } else if ('string' == typeof opts.updated) {
       this[$updated] = new Date(opts.updated)
     }
@@ -101,7 +101,7 @@ class DIDDocument {
     // - https://w3c-ccg.github.io/did-spec/#delete-revoke
     // A timestamp value indicating when the identifier was revoked
     if (opts.revoked) {
-      this[$revoked] = new Date(opts.revoked)
+      this[$revoked] = new Date()
     }
   }
 
