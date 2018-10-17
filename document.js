@@ -100,7 +100,7 @@ class DIDDocument {
     // 5.0 Revoked
     // - https://w3c-ccg.github.io/did-spec/#delete-revoke
     // A timestamp value indicating when the identifier was revoked
-    if (opts.revoked) {
+    if (opts.revoked && 'boolean' == typeof opts.revoked) {
       this[$revoked] = new Date()
     }
   }
