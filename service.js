@@ -1,5 +1,6 @@
 'use strict'
 
+const $id = Symbol('id')
 const $type = Symbol('type')
 const $serviceEndpoint = Symbol('serviceEndpoint')
 
@@ -8,7 +9,8 @@ class Service {
     return new Service(json.type, json.serviceEndpoint, json)
   }
 
-  constructor(type, endpoint, props) {
+  constructor(id, type, endpoint, props) {
+    this[$id] = id
     this[$type] = type
     this[$serviceEndpoint] = endpoint
 
@@ -19,6 +21,7 @@ class Service {
     }
   }
 
+  get id() { return this[$id] }
   get type() { return this[$type] }
   get serviceEndpoint() { return this[$serviceEndpoint] }
 
@@ -27,8 +30,8 @@ class Service {
   }
 
   toJSON() {
-    const { type, serviceEndpoint } = this
-    return Object.assign({}, this, { type, serviceEndpoint })
+    const { id, type, serviceEndpoint } = this
+    return Object.assign({}, this, { id, type, serviceEndpoint })
   }
 }
 
