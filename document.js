@@ -85,8 +85,6 @@ class DIDDocument {
     // of the most recent change.
     if (null == opts.updated) {
       this[$updated] = new Date()
-    } else if ('string' == typeof opts.revoked) {
-      this[$updated] = new Date(opts.revoked)
     } else if ('string' == typeof opts.updated) {
       this[$updated] = new Date(opts.updated)
     }
