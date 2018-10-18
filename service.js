@@ -6,7 +6,7 @@ const $serviceEndpoint = Symbol('serviceEndpoint')
 
 class Service {
   static fromJSON(json) {
-    return new Service(json.type, json.serviceEndpoint, json)
+    return new Service(json.id, json.type, json.endpoint, json.props)
   }
 
   constructor(id, type, endpoint, props) {
@@ -15,8 +15,9 @@ class Service {
     this[$serviceEndpoint] = endpoint
 
     if (props && 'object' == typeof props) {
+      delete props.id
       delete props.type
-      delete props.serviceEndpoint
+      delete props.endpoint
       Object.assign(this, props)
     }
   }
@@ -30,8 +31,8 @@ class Service {
   }
 
   toJSON() {
-    const { id, type, serviceEndpoint } = this
-    return Object.assign({}, this, { id, type, serviceEndpoint })
+    const { id, type, serviceEndpoint, props } = this
+    return Object.assign({}, this, { id, type, serviceEndpoint, props })
   }
 }
 
