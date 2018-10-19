@@ -31,8 +31,8 @@ class Service {
   }
 
   toJSON() {
-    const { id, type, serviceEndpoint, props } = this
-    return Object.assign({}, this, { id, type, serviceEndpoint, props })
+    const { id, type, serviceEndpoint } = this
+    return Object.assign({}, this, { id, type, serviceEndpoint })
   }
 }
 
