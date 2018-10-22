@@ -133,6 +133,12 @@ class DIDDocument {
       pk = PublicKey.fromJSON(pk)
     }
 
+    for (const key in this[$publicKey]) {
+      if (key.id === pk.id) {
+        return this
+      }
+    }
+
     this[$publicKey].push(pk)
     return this
   }
@@ -144,6 +150,12 @@ class DIDDocument {
       auth = Authentication.fromJSON(auth)
     }
 
+    for (const k in this[$authentication]) {
+      if (k.publicKey === auth.publicKey) {
+        return this
+      }
+    }
+
     this[$authentication].push(auth)
     return this
   }
@@ -153,6 +165,12 @@ class DIDDocument {
       throw new TypeError("DIDDocument#addService: Expecting object.")
     } else if (false == service instanceof Service) {
       service = Service.fromJSON(service)
+    }
+
+    for (const s in this[$service]) {
+      if (s.id === service.id) {
+        return this
+      }
     }
 
     this[$service].push(service)
