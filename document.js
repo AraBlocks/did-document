@@ -133,8 +133,8 @@ class DIDDocument {
       pk = PublicKey.fromJSON(pk)
     }
 
-    for (const i in this[$publicKey]) {
-      if (this[$publicKey][i].id === pk.id) {
+    for (const key of this[$publicKey]) {
+      if (key.id === pk.id) {
         return this
       }
     }
@@ -150,8 +150,8 @@ class DIDDocument {
       auth = Authentication.fromJSON(auth)
     }
 
-    for (const j in this[$authentication]) {
-      if (this[$authentication][j].publicKey === auth.publicKey) {
+    for (const authKey of this[$authentication]) {
+      if (authKey.publicKey === auth.publicKey) {
         return this
       }
     }
@@ -167,8 +167,8 @@ class DIDDocument {
       service = Service.fromJSON(service)
     }
 
-    for (const k in this[$service]) {
-      if (this[$service][k].id === service.id) {
+    for (const val of this[$service]) {
+      if (val.id === service.id) {
         return this
       }
     }
