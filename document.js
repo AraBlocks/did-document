@@ -144,7 +144,7 @@ class DIDDocument {
         this[$publicKey].push(pk)
       }
     } catch(err) {
-        throw new TypeError("DIDDocument#addPublicKey: Expecting publicKey.id to be a valid DID.")
+        throw new TypeError("DIDDocument#addPublicKey: Expecting id for publicKey to be a valid DID.")
     }
 
     return this
@@ -168,7 +168,7 @@ class DIDDocument {
         this[$authentication].push(auth)
       }
     } catch(err) {
-        throw new TypeError("DIDDocument#addAuthentication: Expecting authentication.publicKey to be a valid DID.")
+        throw new TypeError("DIDDocument#addAuthentication: Expecting publicKey for authentication to be a valid DID.")
     }
 
     return this
@@ -192,9 +192,9 @@ class DIDDocument {
         this[$service].push(service)
       }
     } catch(err) {
-        throw new TypeError("DIDDocument#addService: Expecting service.id to be a valid DID.")
+        throw new TypeError("DIDDocument#addService: Expecting id for service to be a valid DID.")
     }
-    
+
     return this
   }
 
