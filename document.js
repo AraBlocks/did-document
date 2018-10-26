@@ -4,7 +4,7 @@ const { Authentication } = require('./authentication')
 const { PublicKey } = require('./public-key')
 const { normalize } = require('./normalize')
 const { Service } = require('./service')
-const { DID } = require('did-uri')
+const { DID, parse } = require('did-uri')
 
 const $id = Symbol('id')
 const $proof = Symbol('proof')
@@ -139,7 +139,14 @@ class DIDDocument {
       }
     }
 
-    this[$publicKey].push(pk)
+    try {
+      if (parse(pk.id)) {
+        this[$publicKey].push(pk)
+      }
+    } catch(err) {
+        throw new TypeError("DIDDocument#addPublicKey: Expecting publicKey.id to be a valid DID.")
+    }
+
     return this
   }
 
@@ -156,7 +163,14 @@ class DIDDocument {
       }
     }
 
-    this[$authentication].push(auth)
+    try {
+      if (parse(auth.publicKey)) {
+        this[$authentication].push(auth)
+      }
+    } catch(err) {
+        throw new TypeError("DIDDocument#addAuthentication: Expecting authentication.publicKey to be a valid DID.")
+    }
+
     return this
   }
 
@@ -173,7 +187,14 @@ class DIDDocument {
       }
     }
 
-    this[$service].push(service)
+    try {
+      if (parse(service.id)) {
+        this[$service].push(service)
+      }
+    } catch(err) {
+        throw new TypeError("DIDDocument#addService: Expecting service.id to be a valid DID.")
+    }
+    
     return this
   }
 
