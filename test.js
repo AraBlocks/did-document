@@ -25,12 +25,13 @@ test("Authentication#fromJSON()", (t) => {
   t.end()
 })
 
-test("new Service(type, serviceEndpoint, props)", (t) => {
+test("new Service(id, type, serviceEndpoint, props)", (t) => {
+  const id = 'did:ddo:123'
   const type = 'WebService'
   const serviceEndpoint = 'http://my.service.example.com/v1'
   const token = '12345'
   const props = {token}
-  const service = new Service(type, serviceEndpoint, props)
+  const service = new Service(id, type, serviceEndpoint, props)
   t.true(type == service.type)
   t.true(serviceEndpoint == service.serviceEndpoint)
   t.true(token == service.token)
