@@ -75,7 +75,7 @@ class DIDDocument {
     // the original creation.
     if (null == opts.created) {
       this[$created] = new Date()
-    } else if ('string' == typeof opts.created) {
+    } else {
       this[$created] = new Date(opts.created)
     }
 
@@ -85,7 +85,7 @@ class DIDDocument {
     // of the most recent change.
     if (null == opts.updated) {
       this[$updated] = new Date()
-    } else if ('string' == typeof opts.updated) {
+    } else {
       this[$updated] = new Date(opts.updated)
     }
 
@@ -103,7 +103,7 @@ class DIDDocument {
     if (opts.revoked) {
       if ('boolean' == typeof opts.revoked) {
         this[$revoked] = new Date()
-      } else if ('string' == typeof opts.revoked) {
+      } else {
         this[$revoked] = new Date(opts.revoked)
       }
     }
@@ -116,14 +116,7 @@ class DIDDocument {
   get service() { return this[$service] }
   get created() { return this[$created] }
   get updated() { return this[$updated] }
-  get revoked() {
-    if (this[$revoked]) {
-      return this[$revoked]
-    }
-    else {
-      return null
-    }
-  }
+  get revoked() { return this[$revoked] || null }
   get proof() { return this[$proof] }
 
   [require('util').inspect.custom]() {
@@ -231,6 +224,7 @@ class DIDDocument {
       updated: this[$updated].toISOString(),
       proof: this[$proof],
     }
+
     if (this[$revoked]) {
       ddo.revoked = this[$revoked].toISOString()
     }
