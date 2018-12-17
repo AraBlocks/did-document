@@ -185,7 +185,7 @@ class DIDDocument {
     }
 
     try {
-      if (parse(service.id)) {
+      if (parse(service.id.split(';')[0])) {
         this[$service].push(service)
       }
     } catch(err) {
