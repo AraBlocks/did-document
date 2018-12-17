@@ -1,10 +1,10 @@
 'use strict'
 
 const { Authentication } = require('./authentication')
+const { DID, parse } = require('did-uri')
 const { PublicKey } = require('./public-key')
 const { normalize } = require('./normalize')
 const { Service } = require('./service')
-const { DID, parse } = require('did-uri')
 
 const $id = Symbol('id')
 const $proof = Symbol('proof')
