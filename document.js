@@ -132,6 +132,7 @@ class DIDDocument {
 
     for (const key of this[$publicKey]) {
       if (key.id === pk.id) {
+        Object.assign(key, pk)
         return this
       }
     }
@@ -156,6 +157,7 @@ class DIDDocument {
 
     for (const authKey of this[$authentication]) {
       if (authKey.publicKey === auth.publicKey) {
+        Object.assign(authKey, auth)
         return this
       }
     }
@@ -180,6 +182,7 @@ class DIDDocument {
 
     for (const val of this[$service]) {
       if (val.id === service.id) {
+        Object.assign(val, service)
         return this
       }
     }
