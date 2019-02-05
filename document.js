@@ -16,7 +16,9 @@ const $service = Symbol('service')
 const $publicKey = Symbol('publicKey')
 const $authentication = Symbol('authentication')
 
-const kDIDDocumentContext = 'https://w3id.org/did/v1'
+const W3ID_DID_V1_CONTEXT = 'https://w3id.org/did/v1'
+
+const W3ID_DID_V1_SERVICE_DELIM = ';'
 
 // 4. https://w3c-ccg.github.io/did-spec/#did-documents
 class DIDDocument {
@@ -32,7 +34,7 @@ class DIDDocument {
     if (context && 'string' == typeof context || Array.isArray(context)) {
       this[$context] = context
     } else {
-      this[$context] = kDIDDocumentContext
+      this[$context] = W3ID_DID_V1_CONTEXT
     }
 
     // 4.2 DID Subject
@@ -50,14 +52,30 @@ class DIDDocument {
     // authentication (see Section 4.4 Authentication) or
     // establishing secure communication with service
     // endpoints (see Section 4.6 Service Endpoints).
-    this[$publicKey] = Object.assign([], opts.publicKey)
+    this[$publicKey] = []
+
+    if (Array.isArray(opts.publicKey)) {
+      for (const pk of opts.publicKey) {
+        this.addPublicKey(pk)
+      }
+    } else if (opts.publicKey) {
+      this.addPublicKey(opts.publicKey)
+    }
 
     // 4.4 Authentication
     // - https://w3c-ccg.github.io/did-spec/#authentication
     // Authentication is the mechanism by which an entity
     // can cryptographically prove that they are associated
     // with a DID and DID Description
-    this[$authentication] = Object.assign([], opts.authentication)
+    this[$authentication] = []
+
+    if (Array.isArray(opts.authentication)) {
+      for (const auth of opts.authentication) {
+        this.addAuthentication(auth)
+      }
+    } else if (opts.authentication) {
+      this.addAuthentication(opts.authentication)
+    }
 
     // 4.6 Service Endpoints
     // - https://w3c-ccg.github.io/did-spec/#service-endpoints
@@ -67,7 +85,15 @@ class DIDDocument {
     // endpoint may represent any type of service the entity wishes to
     // advertise, including decentralized identity management services
     // for further discovery, authentication, authorization, or interaction.
-    this[$service] = Object.assign([], opts.service)
+    this[$service] = []
+
+    if (Array.isArray(opts.service)) {
+      for (const service of opts.service) {
+        this.addService(service)
+      }
+    } else if (opts.service) {
+      this.addService(opts.service)
+    }
 
     // 4.7 Created
     // - https://w3c-ccg.github.io/did-spec/#created-optional
@@ -126,9 +152,10 @@ class DIDDocument {
   addPublicKey(pk) {
     if (null == pk || 'object' != typeof pk) {
       throw new TypeError("DIDDocument#addPublicKey: Expecting object.")
-    } else if (false == pk instanceof PublicKey) {
-      pk = PublicKey.fromJSON(pk)
-    }
+   }
+
+    const controller = String(this.id)
+    pk = PublicKey.fromJSON(Object.assign({}, { controller }, pk))
 
     for (const key of this[$publicKey]) {
       if (key.id === pk.id) {
@@ -142,7 +169,7 @@ class DIDDocument {
         this[$publicKey].push(pk)
       }
     } catch(err) {
-        throw new TypeError("DIDDocument#addPublicKey: Expecting id for publicKey to be a valid DID.")
+      throw new TypeError("DIDDocument#addPublicKey: Expecting id for publicKey to be a valid DID.")
     }
 
     return this
@@ -151,9 +178,9 @@ class DIDDocument {
   addAuthentication(auth) {
     if (null == auth || 'object' != typeof auth) {
       throw new TypeError("DIDDocument#addAuthentication: Expecting object.")
-    } else if (false == auth instanceof Authentication) {
-      auth = Authentication.fromJSON(auth)
     }
+
+    auth = Authentication.fromJSON(auth)
 
     for (const authKey of this[$authentication]) {
       if (authKey.publicKey === auth.publicKey) {
@@ -176,9 +203,9 @@ class DIDDocument {
   addService(service) {
     if (null == service || 'object' != typeof service) {
       throw new TypeError("DIDDocument#addService: Expecting object.")
-    } else if (false == service instanceof Service) {
-      service = Service.fromJSON(service)
     }
+
+    service = Service.fromJSON(service)
 
     for (const val of this[$service]) {
       if (val.id === service.id) {
@@ -188,7 +215,8 @@ class DIDDocument {
     }
 
     try {
-      if (parse(service.id.split(';')[0])) {
+      const delim = W3ID_DID_V1_SERVICE_DELIM
+      if (parse(service.id.split(delim)[0])) {
         this[$service].push(service)
       }
     } catch(err) {
@@ -236,6 +264,13 @@ class DIDDocument {
 }
 
 module.exports = {
-  kDIDDocumentContext,
+  get kDIDDocumentContext() {
+    console.warn(
+      'kDIDDocumentContext is deprcated. ' +
+      'Please use W3ID_DID_V1_CONTEXT instead');
+    return W3ID_DID_V1_CONTEXT
+  },
+
+  W3ID_DID_V1_CONTEXT,
   DIDDocument
 }
