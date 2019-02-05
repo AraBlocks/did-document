@@ -15,7 +15,7 @@
   "author": "Joseph Werle <werle@littlstar.com>",
   "license": "MIT",
   "dependencies": {
-    "did-document-public-key": "^0.3.x",
+    "did-document-public-key": "^0.5.x",
     "did-uri": "^0.2.8"
   },
   "devDependencies": {
