@@ -17,8 +17,9 @@ const $publicKey = Symbol('publicKey')
 const $authentication = Symbol('authentication')
 
 const W3ID_DID_V1_CONTEXT = 'https://w3id.org/did/v1'
-
 const W3ID_DID_V1_SERVICE_DELIM = ';'
+
+const toJSON = (json) => JSON.parse(JSON.stringify(json))
 
 // 4. https://w3c-ccg.github.io/did-spec/#did-documents
 class DIDDocument {
@@ -155,7 +156,7 @@ class DIDDocument {
    }
 
     const controller = String(this.id)
-    pk = PublicKey.fromJSON(Object.assign({}, { controller }, pk))
+    pk = PublicKey.fromJSON(Object.assign({}, { controller }, toJSON(pk)))
 
     for (const key of this[$publicKey]) {
       if (key.id === pk.id) {
@@ -180,7 +181,7 @@ class DIDDocument {
       throw new TypeError("DIDDocument#addAuthentication: Expecting object.")
     }
 
-    auth = Authentication.fromJSON(auth)
+    auth = Authentication.fromJSON(toJSON(auth))
 
     for (const authKey of this[$authentication]) {
       if (authKey.publicKey === auth.publicKey) {
@@ -205,7 +206,7 @@ class DIDDocument {
       throw new TypeError("DIDDocument#addService: Expecting object.")
     }
 
-    service = Service.fromJSON(service)
+    service = Service.fromJSON(toJSON(service))
 
     for (const val of this[$service]) {
       if (val.id === service.id) {
