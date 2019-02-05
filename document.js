@@ -239,7 +239,7 @@ class DIDDocument {
   digest(hash, encoding) {
     const json = this.toJSON()
     const { id, publicKey, authentication, service, created, updated, revoked } = json
-    const normal = normalize({id, publicKey, authentication, service, created, updated, revoked})
+    const normal = normalize(toJSON({id, publicKey, authentication, service, created, updated, revoked}))
     const string = JSON.stringify(normal)
     const digest = hash(Buffer.from(string))
     return encoding ? digest.toString(encoding) : digest
